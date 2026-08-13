@@ -22,8 +22,6 @@
       --light-yellow:#f5edc5;
       --white:#fcfaf7;
       --pink:#f2d5cd;
-      --accent:#b57a6b;
-      --accent2:#dbb6ad;
       --line:rgba(61,53,48,.10);
       --shadow:0 25px 80px rgba(61,53,48,.08);
       --serif:"Cormorant Garamond", Georgia, serif;
@@ -365,6 +363,7 @@
 </head>
 
 <body>
+  <!-- Loader -->
   <div class="loader" id="loader">
     <div class="loader-inner">
       <div class="loader__letters">Д & А</div>
@@ -385,6 +384,7 @@
   </nav>
 
   <main>
+    <!-- Hero -->
     <section class="hero" id="top">
       <div class="hero__circle"></div>
       <div class="hero__content reveal">
@@ -396,6 +396,7 @@
       </div>
     </section>
 
+    <!-- Story -->
     <section class="intro" id="story">
       <div class="section reveal">
         <div class="intro__ornament">❦</div>
@@ -409,6 +410,7 @@
       </div>
     </section>
 
+    <!-- Date -->
     <section id="date">
       <div class="section reveal">
         <div class="section__label">сохраните эту дату</div>
@@ -434,6 +436,7 @@
       </div>
     </section>
 
+    <!-- Place -->
     <section class="section--wide">
       <div class="section reveal">
         <div class="section__label">место встречи</div>
@@ -468,6 +471,7 @@
       </div>
     </section>
 
+    <!-- Plan -->
     <section id="plan">
       <div class="section reveal">
         <div class="section__label">как пройдёт наш день</div>
@@ -504,6 +508,7 @@
       </div>
     </section>
 
+    <!-- Dress code -->
     <section class="dress">
       <div class="section reveal">
         <div class="section__label">небольшая просьба</div>
@@ -533,35 +538,36 @@
       </div>
     </section>
 
+    <!-- RSVP -->
     <section class="rsvp" id="rsvp">
-  <div class="section reveal">
-    <div class="section__label">пожалуйста, ответьте</div>
-    <h2>Будете с нами?</h2>
-    <p class="section__lead">Заполните небольшую форму — так мы сможем всё подготовить именно для вас.</p>
+      <div class="section reveal">
+        <div class="section__label">пожалуйста, ответьте</div>
+        <h2>Будете с нами?</h2>
+        <p class="section__lead">Заполните небольшую форму — так мы сможем всё подготовить именно для вас.</p>
 
-    <form id="rsvpForm" style="max-width:560px; margin:40px auto 0; display:grid; gap:12px;">
-      <input required name="name" placeholder="Ваше имя" autocomplete="name"
-             style="width:100%; border:1px solid var(--line); background:var(--paper); padding:16px 17px; outline:none; color:var(--ink); font:300 12px var(--sans); transition:.3s;">
-      
-      <select required name="answer"
-              style="width:100%; border:1px solid var(--line); background:var(--paper); padding:16px 17px; outline:none; color:var(--ink); font:300 12px var(--sans); transition:.3s;">
-        <option value="" disabled selected>Выберите ответ</option>
-        <option>С радостью буду!</option>
-        <option>Буду +1</option>
-        <option>К сожалению, не смогу</option>
-      </select>
-      
-      <input name="guest" placeholder="Имя сопровождающего (если будет)"
-             style="width:100%; border:1px solid var(--line); background:var(--paper); padding:16px 17px; outline:none; color:var(--ink); font:300 12px var(--sans); transition:.3s;">
-      
-      <textarea name="comment" placeholder="Пожелания или важная информация"
-                style="width:100%; border:1px solid var(--line); background:var(--paper); padding:16px 17px; outline:none; color:var(--ink); font:300 12px var(--sans); transition:.3s; min-height:110px;"></textarea>
-      
-      <button class="btn" type="submit" id="submitBtn">Отправить ответ</button>
-      <div id="formMessage" style="min-height:20px; color:var(--olive); font-size:11px; text-align:center;"></div>
-    </form>
-  </div>
-</section>
+        <form id="rsvpForm" style="max-width:560px; margin:40px auto 0; display:grid; gap:12px;">
+          <input required name="name" placeholder="Ваше имя" autocomplete="name"
+                 style="width:100%; border:1px solid var(--line); background:var(--paper); padding:16px 17px; outline:none; color:var(--ink); font:300 12px var(--sans); transition:.3s;">
+          
+          <select required name="answer"
+                  style="width:100%; border:1px solid var(--line); background:var(--paper); padding:16px 17px; outline:none; color:var(--ink); font:300 12px var(--sans); transition:.3s;">
+            <option value="" disabled selected>Выберите ответ</option>
+            <option>С радостью буду!</option>
+            <option>Буду +1</option>
+            <option>К сожалению, не смогу</option>
+          </select>
+          
+          <input name="guest" placeholder="Имя сопровождающего (если будет)"
+                 style="width:100%; border:1px solid var(--line); background:var(--paper); padding:16px 17px; outline:none; color:var(--ink); font:300 12px var(--sans); transition:.3s;">
+          
+          <textarea name="comment" placeholder="Пожелания или важная информация"
+                    style="width:100%; border:1px solid var(--line); background:var(--paper); padding:16px 17px; outline:none; color:var(--ink); font:300 12px var(--sans); transition:.3s; min-height:110px;"></textarea>
+          
+          <button class="btn" type="submit" id="submitBtn">Отправить ответ</button>
+          <div id="formMessage" style="min-height:20px; color:var(--olive); font-size:11px; text-align:center;"></div>
+        </form>
+      </div>
+    </section>
   </main>
 
   <footer>
@@ -571,109 +577,7 @@
 
   <button class="heart" id="heart" aria-label="Включить музыку">♪</button>
 
- <script>
-  // ====== ЛЁГКИЕ НАСТРОЙКИ ======
-  const loader = document.getElementById('loader');
-  window.addEventListener('load', () => setTimeout(() => loader.classList.add('hide'), 650));
-
-  // Нежные лепестки
-  const petals = document.getElementById('petals');
-  for(let i=0;i<16;i++){
-    const p=document.createElement('span');
-    p.className='petal';
-    p.style.left=(Math.random()*100)+'%';
-    p.style.animationDuration=(9+Math.random()*10)+'s';
-    p.style.animationDelay=(-Math.random()*15)+'s';
-    p.style.opacity=(.25+Math.random()*.45);
-    p.style.transform=`scale(${.55+Math.random()*.8}) rotate(${Math.random()*80}deg)`;
-    petals.appendChild(p);
-  }
-
-  // Появление блоков при прокрутке
-  const observer = new IntersectionObserver((entries)=>{
-    entries.forEach(entry=>{
-      if(entry.isIntersecting) entry.target.classList.add('visible');
-    });
-  }, {threshold:.12});
-  document.querySelectorAll('.reveal').forEach(el=>observer.observe(el));
-
-  // ====== ОТПРАВКА В TELEGRAM ======
-  document.addEventListener('DOMContentLoaded', function() {
-    const form = document.getElementById('rsvpForm');
-    const messageDiv = document.getElementById('formMessage');
-    const submitBtn = document.getElementById('submitBtn');
-
-    // ↓↓↓ ВСТАВЬТЕ СЮДА СВОИ ДАННЫЕ ↓↓↓
-    const BOT_TOKEN = '8246673723:AAHCQcZRiQ08P1lJ4dr_5M1VAXjD274vuJ4';  // замените на токен из ШАГА 1
-    const CHAT_ID = '8596485821в';               // замените на число из ШАГА 2
-    // ↑↑↑ ВСТАВЬТЕ СЮДА СВОИ ДАННЫЕ ↑↑↑
-
-    if (form) {
-      form.addEventListener('submit', function(e) {
-        e.preventDefault();
-
-        // Собираем данные
-        const name = document.querySelector('input[name="name"]').value.trim() || 'ИМЯ';
-        const answer = document.querySelector('select[name="answer"]').value; || 'ОТВЕТ'
-        const guest = document.querySelector('input[name="guest"]').value.trim() || 'СОПРОВОЖДАЮЩИЙ';
-        const comment = document.querySelector('textarea[name="comment"]').value.trim() || 'ПОЖЕЛАНИЯ';
-
-        if (!answer) {
-          messageDiv.textContent = '❌ Пожалуйста, выберите вариант ответа.';
-          messageDiv.style.color = '#b57a6b';
-          return;
-        }
-
-        // Блокируем кнопку
-        submitBtn.textContent = 'ОТПРАВКА...';
-        submitBtn.disabled = true;
-        messageDiv.textContent = '⏳ Отправка...';
-        messageDiv.style.color = 'var(--muted)';
-
-        // Формируем сообщение
-        let text = '📨 Новый ответ на приглашение\n\n';
-        text += `👤 Имя: ${name}\n`;
-        text += `✅ Ответ: ${answer}\n`;
-        if (guest) text += `👥 Сопровождающий: ${guest}\n`;
-        if (comment) text += `\n💬 Пожелания: ${comment}\n`;
-        text += `\n📅 ${new Date().toLocaleString('ru-RU')}`;
-
-        // === ОТПРАВКА В TELEGRAM ===
-        const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage?chat_id=${CHAT_ID}&text=${encodeURIComponent(text)}`;
-        
-        // Создаём невидимую картинку для отправки
-        const img = document.createElement('img');
-        img.style.display = 'none';
-        img.src = url;
-        document.body.appendChild(img);
-        
-        // Показываем успех
-        messageDiv.textContent = `✅ Спасибо, ${name}! Ваш ответ отправлен организаторам. ♡`;
-        messageDiv.style.color = 'var(--olive)';
-        form.reset();
-        submitBtn.textContent = 'Отправить ответ';
-        submitBtn.disabled = false;
-        
-        // Удаляем картинку
-        setTimeout(() => img.remove(), 1000);
-      });
-    }
-  });
-
-  // Кнопка музыки
-  let audio = null;
-  document.getElementById('heart').addEventListener('click', ()=>{
-    if(!audio){
-      audio = new Audio();
-      audio.loop = true;
-      // audio.src = "music.mp3";
-    }
-    if(audio.src){
-      audio.paused ? audio.play() : audio.pause();
-    }else{
-      alert('Добавьте файл music.mp3 и укажите audio.src в коде.');
-    }
-  });
-</script>
-</body>
-</html>
+  <script>
+    // ====== ЛЁГКИЕ НАСТРОЙКИ ======
+    const loader = document.getElementById('loader');
+    window.addEventListener
