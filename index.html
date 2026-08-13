@@ -47,7 +47,11 @@
       background:var(--bg);
       transition:opacity .8s, visibility .8s;
     }
-    .loader.hide{opacity:0;visibility:hidden}
+    .loader.hide{
+      opacity:0;
+      visibility:hidden;
+      pointer-events:none;
+    }
     .loader__letters{
       font:500 64px/1 var(--serif);
       letter-spacing:.08em;
@@ -68,6 +72,7 @@
       position:fixed;top:16px;left:50%;transform:translateX(-50%);
       z-index:90;padding:6px;border:1px solid rgba(255,255,255,.75);
       border-radius:999px;background:rgba(252,250,247,.72);
+      -webkit-backdrop-filter:blur(18px);
       backdrop-filter:blur(18px);
       box-shadow:0 10px 40px rgba(70,55,48,.08);
       display:flex;gap:3px;
@@ -322,8 +327,13 @@
     .heart{
       position:fixed;right:22px;bottom:22px;z-index:70;
       width:46px;height:46px;border:1px solid var(--line);border-radius:50%;
-      background:rgba(252,250,247,.78);backdrop-filter:blur(12px);
-      cursor:pointer;color:var(--olive);font-size:18px;box-shadow:0 8px 25px rgba(70,55,48,.08);
+      background:rgba(252,250,247,.78);
+      -webkit-backdrop-filter:blur(12px);
+      backdrop-filter:blur(12px);
+      cursor:pointer;
+      color:var(--olive);
+      font-size:18px;
+      box-shadow:0 8px 25px rgba(70,55,48,.08);
     }
 
     @keyframes fall{
@@ -578,6 +588,129 @@
   <button class="heart" id="heart" aria-label="Включить музыку">♪</button>
 
   <script>
-   const loader = document.getElementById('loader');
-window.addEventListener('load', () => setTimeout(() => loader.classList.add('hide'), 650));
+    // ====== УПРАВЛЕНИЕ ЗАГРУЗЧИКОМ ======
+    var loader = document.getElementById('loader');
+    if (loader) {
+      window.addEventListener('load', function() {
+        setTimeout(function() {
+          loader.classList.add('hide');
+        }, 650);
+      });
+    }
+
+    // ====== НЕЖНЫЕ ЛЕПЕСТКИ ======
+    var petalsContainer = document.getElementById('petals');
+    if (petalsContainer) {
+      for (var i = 0; i < 16; i++) {
+        var p = document.createElement('span');
+        p.className = 'petal';
+        p.style.left = (Math.random() * 100) + '%';
+        p.style.animationDuration = (9 + Math.random() * 10) + 's';
+        p.style.animationDelay = (-Math.random() * 15) + 's';
+        p.style.opacity = (0.25 + Math.random() * 0.45);
+        p.style.transform = 'scale(' + (0.55 + Math.random() * 0.8) + ') rotate(' + (Math.random() * 80) + 'deg)';
+        petalsContainer.appendChild(p);
+      }
+    }
+
+    // ====== ПОЯВЛЕНИЕ БЛОКОВ ПРИ ПРОКРУТКЕ ======
+    var observer = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.12 });
+
+    var revealElements = document.querySelectorAll('.reveal');
+    for (var i = 0; i < revealElements.length; i++) {
+      observer.observe(revealElements[i]);
+    }
+
+    // ====== ОТПРАВКА В TELEGRAM ======
+    document.addEventListener('DOMContentLoaded', function() {
+      var form = document.getElementById('rsvpForm');
+      var messageDiv = document.getElementById('formMessage');
+      var submitBtn = document.getElementById('submitBtn');
+
+      var BOT_TOKEN = '8843311292:AAFw0UhCi0UuS3iZrSC-tbv6UD9pIiilnRr0';
+      var CHAT_ID = '8596485821';
+
+      if (form) {
+        form.addEventListener('submit', function(e) {
+          e.preventDefault();
+
+          var name = document.querySelector('input[name="name"]').value.trim() || 'Не указано';
+          var answer = document.querySelector('select[name="answer"]').value;
+          var guest = document.querySelector('input[name="guest"]').value.trim() || '';
+          var comment = document.querySelector('textarea[name="comment"]').value.trim() || '';
+
+          if (!answer) {
+            messageDiv.textContent = '❌ Пожалуйста, выберите вариант ответа.';
+            messageDiv.style.color = '#b57a6b';
+            return;
+          }
+
+          submitBtn.textContent = 'ОТПРАВКА...';
+          submitBtn.disabled = true;
+          messageDiv.textContent = '⏳ Отправка...';
+          messageDiv.style.color = 'var(--muted)';
+
+          var text = '📨 Новый ответ на приглашение\n\n';
+          text = text + '👤 Имя: ' + name + '\n';
+          text = text + '✅ Ответ: ' + answer + '\n';
+          if (guest) {
+            text = text + '👥 Сопровождающий: ' + guest + '\n';
+          }
+          if (comment) {
+            text = text + '\n💬 Пожелания: ' + comment + '\n';
+          }
+          text = text + '\n📅 ' + new Date().toLocaleString('ru-RU');
+
+          var url = 'https://api.telegram.org/bot' + BOT_TOKEN + '/sendMessage?chat_id=' + CHAT_ID + '&text=' + encodeURIComponent(text);
+          
+          // Отправка через изображение (обходит CORS)
+          var img = document.createElement('img');
+          img.style.display = 'none';
+          img.src = url;
+          document.body.appendChild(img);
+          
+          messageDiv.textContent = '✅ Спасибо, ' + name + '! Ваш ответ отправлен организаторам. ♡';
+          messageDiv.style.color = 'var(--olive)';
+          form.reset();
+          submitBtn.textContent = 'Отправить ответ';
+          submitBtn.disabled = false;
+          
+          setTimeout(function() {
+            if (img.parentNode) {
+              img.parentNode.removeChild(img);
+            }
+          }, 1000);
+        });
+      }
+    });
+
+    // ====== КНОПКА МУЗЫКИ ======
+    var audio = null;
+    var heartBtn = document.getElementById('heart');
+    if (heartBtn) {
+      heartBtn.addEventListener('click', function() {
+        if (!audio) {
+          audio = new Audio();
+          audio.loop = true;
+          // audio.src = "music.mp3";
+        }
+        if (audio.src) {
+          if (audio.paused) {
+            audio.play();
+          } else {
+            audio.pause();
+          }
+        } else {
+          alert('Добавьте файл music.mp3 и укажите audio.src в коде.');
+        }
+      });
+    }
   </script>
+</body>
+</html>
