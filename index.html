@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#f5f0ea" />
+  <meta name="description" content="Нежное свадебное приглашение" />
+  <title>Дарья и Александр — наше приглашение</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Manrope:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --bg:#f5f0ea;
+      --paper:#fcfaf7;
+      --ink:#3d3530;
+      --muted:#8a8178;
+      --olive:#8b9a7a;
+      --ice:#c8d8d4;
+      --light-yellow:#f5edc5;
+      --white:#fcfaf7;
+      --pink:#f2d5cd;
+      --accent:#b57a6b;
+      --accent2:#dbb6ad;
+      --line:rgba(61,53,48,.10);
+      --shadow:0 25px 80px rgba(61,53,48,.08);
+      --serif:"Cormorant Garamond", Georgia, serif;
+      --sans:"Manrope", Arial, sans-serif;
+    }
+
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      color:var(--ink);
+      background:var(--bg);
+      font-family:var(--sans);
+      font-weight:300;
+      overflow-x:hidden;
+    }
+    a{color:inherit}
+    button{font:inherit}
+
+    .loader{
+      position:fixed;inset:0;z-index:999;
+      display:grid;place-items:center;
+      background:var(--bg);
+      transition:opacity .8s, visibility .8s;
+    }
+    .loader.hide{opacity:0;visibility:hidden}
+    .loader__letters{
+      font:500 64px/1 var(--serif);
+      letter-spacing:.08em;
+      animation:breath 1.7s ease-in-out infinite;
+      color:var(--olive);
+    }
+    .loader__line{width:90px;height:1px;background:var(--olive);margin:18px auto}
+    .loader__text{
+      font-size:9px;letter-spacing:.28em;text-transform:uppercase;color:var(--muted);
+    }
+
+    .grain{
+      position:fixed;inset:0;pointer-events:none;z-index:80;opacity:.04;
+      background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.65'/%3E%3C/svg%3E");
+    }
+
+    nav{
+      position:fixed;top:16px;left:50%;transform:translateX(-50%);
+      z-index:90;padding:6px;border:1px solid rgba(255,255,255,.75);
+      border-radius:999px;background:rgba(252,250,247,.72);
+      backdrop-filter:blur(18px);
+      box-shadow:0 10px 40px rgba(70,55,48,.08);
+      display:flex;gap:3px;
+    }
+    nav a{
+      text-decoration:none;font-size:10px;letter-spacing:.08em;
+      padding:9px 12px;border-radius:999px;transition:.3s;white-space:nowrap;
+      color:var(--ink);
+    }
+    nav a:hover{background:var(--paper);color:var(--olive);}
+
+    .petals{position:fixed;inset:0;pointer-events:none;z-index:3;overflow:hidden}
+    .petal{
+      position:absolute;top:-30px;width:10px;height:16px;
+      background:rgba(139,154,122,.30);
+      border-radius:80% 20% 80% 20%;
+      animation:fall linear infinite;
+    }
+
+    section{position:relative}
+    .hero{
+      min-height:100svh;
+      display:grid;place-items:center;
+      text-align:center;
+      padding:100px 22px 60px;
+      overflow:hidden;
+      background:
+        radial-gradient(circle at 16% 22%, rgba(200,216,212,.30), transparent 28%),
+        radial-gradient(circle at 85% 74%, rgba(242,213,205,.35), transparent 30%),
+        radial-gradient(circle at 50% 50%, rgba(245,237,197,.15), transparent 40%),
+        var(--bg);
+    }
+    .hero__circle{
+      position:absolute;width:min(90vw,700px);height:min(90vw,700px);
+      border:1px solid rgba(139,154,122,.12);border-radius:50%;
+      animation:rotate 38s linear infinite;
+    }
+    .hero__circle:before,.hero__circle:after{
+      content:"";position:absolute;border-radius:50%;
+    }
+    .hero__circle:before{width:7px;height:7px;left:11%;top:18%;background:var(--olive);}
+    .hero__circle:after{width:5px;height:5px;right:9%;bottom:19%;background:var(--pink);}
+
+    .hero__content{position:relative;z-index:5;max-width:780px}
+    .eyebrow{
+      margin-bottom:18px;color:var(--muted);
+      font-size:10px;letter-spacing:.34em;text-transform:uppercase;
+    }
+    h1{
+      margin:0;
+      font:500 clamp(70px,18vw,155px)/.72 var(--serif);
+      letter-spacing:-.045em;
+      color:var(--ink);
+    }
+    .amp{
+      display:block;margin:20px 0 7px;
+      font:400 clamp(30px,7vw,52px)/1 var(--serif);
+      color:var(--olive);
+    }
+    .hero__date{
+      margin-top:38px;font:500 19px var(--serif);letter-spacing:.18em;
+      color:var(--ink);
+    }
+    .hero__sub{
+      margin:11px auto 0;color:var(--muted);font-size:10px;
+      letter-spacing:.23em;text-transform:uppercase;
+    }
+    .scroll{
+      margin-top:58px;display:inline-flex;flex-direction:column;gap:9px;align-items:center;
+      color:var(--muted);font-size:9px;letter-spacing:.2em;text-transform:uppercase;
+      text-decoration:none;
+    }
+    .scroll:after{
+      content:"";width:1px;height:45px;background:var(--olive);
+      animation:scrollLine 1.6s ease-in-out infinite;
+    }
+
+    .section{
+      max-width:1050px;margin:auto;padding:115px 22px;
+    }
+    .section--wide{max-width:1200px}
+    .section__label{
+      font-size:9px;letter-spacing:.32em;text-transform:uppercase;color:var(--muted);
+      text-align:center;margin-bottom:18px;
+    }
+    .section h2{
+      margin:0 0 24px;text-align:center;
+      font:500 clamp(44px,8vw,78px)/.9 var(--serif);
+      color:var(--ink);
+    }
+    .section__lead{
+      max-width:610px;margin:0 auto 55px;text-align:center;
+      color:var(--muted);font-size:13px;line-height:1.9;
+    }
+
+    .intro{
+      background:var(--paper);
+      border-radius:45px 45px 0 0;
+      box-shadow:0 -20px 70px rgba(70,55,48,.04);
+    }
+    .intro__ornament{
+      text-align:center;font:400 34px var(--serif);color:var(--olive);margin-bottom:24px;
+    }
+
+    .calendar{
+      max-width:680px;margin:0 auto;
+      background:rgba(255,255,255,.55);
+      border:1px solid var(--line);
+      padding:38px 25px;
+      box-shadow:var(--shadow);
+      border-radius:3px;
+    }
+    .calendar__head{text-align:center;margin-bottom:25px}
+    .calendar__month{
+      font:500 31px var(--serif);letter-spacing:.04em;
+      color:var(--ink);
+    }
+    .calendar__year{font-size:9px;letter-spacing:.25em;color:var(--muted);text-transform:uppercase;margin-top:5px}
+    .week,.days{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;text-align:center}
+    .week{font-size:8px;color:var(--muted);letter-spacing:.12em;margin-bottom:9px}
+    .day{padding:10px 0;font:400 17px var(--serif);position:relative;color:var(--ink);}
+    .day.muted{color:#c9beb7}
+    .day.active{color:white;z-index:1}
+    .day.active:before{
+      content:"";position:absolute;width:38px;height:38px;border-radius:50%;
+      background:var(--olive);left:50%;top:50%;transform:translate(-50%,-50%);z-index:-1;
+    }
+
+    .cards{
+      display:grid;grid-template-columns:repeat(3,1fr);gap:16px;
+      margin-top:35px;
+    }
+    .card{
+      min-height:260px;padding:30px 22px;
+      border:1px solid var(--line);background:rgba(255,255,255,.45);
+      display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;
+      transition:.5s;position:relative;overflow:hidden;
+    }
+    .card:hover{transform:translateY(-8px);box-shadow:var(--shadow)}
+    .card__icon{font:400 32px var(--serif);color:var(--olive);margin-bottom:15px}
+    .card h3{font:500 30px var(--serif);margin:0 0 10px;color:var(--ink);}
+    .card p{font-size:11px;line-height:1.8;color:var(--muted);margin:0;}
+    .card a{margin-top:17px;font-size:10px;text-decoration:underline;text-underline-offset:4px;color:var(--olive);}
+
+    .photo{
+      min-height:500px;
+      background:
+        linear-gradient(145deg,rgba(55,45,40,.12),rgba(255,255,255,.06)),
+        radial-gradient(circle at 30% 25%, var(--ice), transparent 27%),
+        radial-gradient(circle at 75% 75%, var(--pink), transparent 30%),
+        radial-gradient(circle at 50% 50%, var(--light-yellow), transparent 20%),
+        #c8d8d4;
+      display:grid;place-items:center;text-align:center;
+      overflow:hidden;position:relative;
+    }
+    .photo:before{
+      content:"";
+      position:absolute;inset:18px;
+      border:1px solid rgba(255,255,255,.55);
+    }
+    .photo__words{
+      position:relative;z-index:2;color:white;text-shadow:0 2px 20px rgba(40,30,25,.22);
+    }
+    .photo__words strong{display:block;font:500 clamp(60px,12vw,125px)/.7 var(--serif);letter-spacing:-.05em}
+    .photo__words span{display:block;margin-top:22px;font-size:9px;letter-spacing:.34em;text-transform:uppercase}
+
+    .timeline{max-width:700px;margin:55px auto 0;position:relative}
+    .timeline:before{
+      content:"";position:absolute;left:50%;top:0;bottom:0;width:1px;background:var(--line);
+    }
+    .event{
+      display:grid;grid-template-columns:1fr 70px 1fr;align-items:center;min-height:125px;
+    }
+    .event:nth-child(odd) .event__text{text-align:right}
+    .event:nth-child(even) .event__text{grid-column:3;text-align:left}
+    .event:nth-child(even) .event__time{grid-column:1;grid-row:1}
+    .event__dot{
+      grid-column:2;grid-row:1;justify-self:center;
+      width:13px;height:13px;border-radius:50%;background:var(--paper);
+      border:1px solid var(--olive);box-shadow:0 0 0 6px var(--paper);
+    }
+    .event__time{
+      grid-column:1;grid-row:1;
+      font:500 27px var(--serif);color:var(--olive);text-align:right;padding-right:25px;
+    }
+    .event:nth-child(even) .event__time{text-align:left;padding:0 0 0 25px}
+    .event__text{grid-column:3;padding-left:25px}
+    .event:nth-child(odd) .event__text{grid-column:1;padding:0 25px 0 0}
+    .event h3{margin:0 0 6px;font:500 26px var(--serif);color:var(--ink);}
+    .event p{margin:0;color:var(--muted);font-size:10px;line-height:1.7}
+
+    .dress{
+      background:var(--paper);
+    }
+    .palette{
+      display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin:40px auto 20px;
+    }
+    .swatch{
+      width:70px;height:70px;border-radius:50%;border:5px solid var(--paper);
+      box-shadow:0 5px 20px rgba(0,0,0,.06);
+      transition:transform .3s;
+    }
+    .swatch:hover{transform:scale(1.05);}
+    .palette-label{
+      display:flex;justify-content:center;gap:12px;flex-wrap:wrap;font-size:9px;color:var(--muted);letter-spacing:.1em;margin-top:6px;
+    }
+    .palette-label span{display:inline-block;width:70px;text-align:center;}
+    
+    .s-olive{background:#8b9a7a;}
+    .s-ice{background:#c8d8d4;}
+    .s-yellow{background:#f5edc5;}
+    .s-white{background:#fcfaf7;border-color:#d4ccc4 !important;}
+    .s-pink{background:#f2d5cd;}
+
+    .rsvp{
+      background:
+        radial-gradient(circle at 20% 20%, rgba(200,216,212,.20), transparent 28%),
+        radial-gradient(circle at 85% 80%, rgba(242,213,205,.30), transparent 30%),
+        radial-gradient(circle at 50% 50%, rgba(245,237,197,.10), transparent 40%),
+        var(--bg);
+      text-align:center;
+    }
+    .rsvp form{max-width:560px;margin:40px auto 0;display:grid;gap:12px}
+    input,select,textarea{
+      width:100%;border:1px solid var(--line);background:rgba(255,255,255,.6);
+      padding:16px 17px;border-radius:0;outline:none;color:var(--ink);
+      font:300 12px var(--sans);transition:.3s;
+    }
+    input:focus,select:focus,textarea:focus{border-color:var(--olive);box-shadow:0 0 0 3px rgba(139,154,122,.15)}
+    textarea{min-height:110px;resize:vertical}
+    .btn{
+      border:0;background:var(--olive);color:white;padding:16px 25px;
+      letter-spacing:.15em;text-transform:uppercase;font-size:9px;cursor:pointer;
+      transition:.3s;
+    }
+    .btn:hover{background:var(--ink);transform:translateY(-2px)}
+    .form-message{min-height:20px;color:var(--olive);font-size:11px}
+
+    footer{
+      padding:80px 22px 55px;text-align:center;
+      background:linear-gradient(135deg, var(--ice) 0%, var(--pink) 100%);
+    }
+    footer .names{font:500 54px var(--serif);color:var(--ink);}
+    footer p{color:var(--muted);font-size:9px;letter-spacing:.2em;text-transform:uppercase}
+
+    .reveal{
+      opacity:0;transform:translateY(30px);
+      transition:opacity .9s ease,transform .9s cubic-bezier(.2,.7,.2,1);
+    }
+    .reveal.visible{opacity:1;transform:none}
+
+    .heart{
+      position:fixed;right:22px;bottom:22px;z-index:70;
+      width:46px;height:46px;border:1px solid var(--line);border-radius:50%;
+      background:rgba(252,250,247,.78);backdrop-filter:blur(12px);
+      cursor:pointer;color:var(--olive);font-size:18px;box-shadow:0 8px 25px rgba(70,55,48,.08);
+    }
+
+    @keyframes fall{
+      0%{transform:translate3d(0,-30px,0) rotate(0)}
+      50%{transform:translate3d(45px,50vh,0) rotate(160deg)}
+      100%{transform:translate3d(-30px,110vh,0) rotate(330deg)}
+    }
+    @keyframes rotate{to{transform:rotate(360deg)}}
+    @keyframes breath{0%,100%{opacity:.5;transform:scale(.98)}50%{opacity:1;transform:scale(1.02)}}
+    @keyframes scrollLine{0%,100%{transform:scaleY(.4);transform-origin:top}50%{transform:scaleY(1);transform-origin:top}}
+
+    @media(max-width:720px){
+      nav{top:10px;max-width:calc(100vw - 20px);overflow:auto;justify-content:flex-start}
+      nav a{font-size:9px;padding:8px 10px}
+      .section{padding:85px 18px}
+      .cards{grid-template-columns:1fr}
+      .card{min-height:210px}
+      .photo{min-height:410px}
+      .timeline:before{left:14px}
+      .event{display:grid;grid-template-columns:42px 1fr;min-height:145px}
+      .event__dot{grid-column:1;grid-row:1}
+      .event__time,.event:nth-child(even) .event__time{
+        grid-column:2;grid-row:1;text-align:left;padding:0 0 0 0;
+        align-self:start;margin-left:26px;margin-top:4px;
+      }
+      .event__text,.event:nth-child(even) .event__text,
+      .event:nth-child(odd) .event__text{
+        grid-column:2;grid-row:1;text-align:left;padding:35px 0 0 26px;
+      }
+      .event h3{font-size:24px}
+      .calendar{padding:27px 13px}
+      .day{font-size:15px}
+      .day.active:before{width:34px;height:34px}
+      .palette-label{display:none;}
+    }
+  </style>
+</head>
+
+<body>
+  <div class="loader" id="loader">
+    <div class="loader-inner">
+      <div class="loader__letters">Д & А</div>
+      <div class="loader__line"></div>
+      <div class="loader__text">наша история начинается</div>
+    </div>
+  </div>
+
+  <div class="grain"></div>
+  <div class="petals" id="petals"></div>
+
+  <nav>
+    <a href="#story">История</a>
+    <a href="#date">Дата</a>
+    <a href="#place">Место</a>
+    <a href="#plan">Программа</a>
+    <a href="#rsvp">RSVP</a>
+  </nav>
+
+  <main>
+    <section class="hero" id="top">
+      <div class="hero__circle"></div>
+      <div class="hero__content reveal">
+        <div class="eyebrow">с любовью приглашаем вас</div>
+        <h1>Дарья <span class="amp"> &</span> Александр</h1>
+        <div class="hero__date">10 · 10 · 2026</div>
+        <div class="hero__sub">день, который хочется разделить с близкими</div>
+        <a class="scroll" href="#story">листать приглашение</a>
+      </div>
+    </section>
+
+    <section class="intro" id="story">
+      <div class="section reveal">
+        <div class="intro__ornament">❦</div>
+        <div class="section__label">дорогие родные и друзья</div>
+        <h2>Мы женимся!</h2>
+        <p class="section__lead">
+          И совсем скоро наступит день, когда две наши истории станут одной.
+          Нам очень хочется, чтобы рядом были люди, которые дороги нам больше всего.
+          Поэтому мы приглашаем вас разделить с нами этот тёплый и счастливый день.
+        </p>
+      </div>
+    </section>
+
+    <section id="date">
+      <div class="section reveal">
+        <div class="section__label">сохраните эту дату</div>
+        <h2>10 Октября 2026</h2>
+        <p class="section__lead">Суббота · начало праздника в 13:30</p>
+
+        <div class="calendar">
+          <div class="calendar__head">
+            <div class="calendar__month">Октябрь</div>
+            <div class="calendar__year">2026 · тепло нашей любви</div>
+          </div>
+          <div class="week">
+            <div>ПН</div><div>ВТ</div><div>СР</div><div>ЧТ</div><div>ПТ</div><div>СБ</div><div>ВС</div>
+          </div>
+          <div class="days">
+            <div class="day muted">1</div><div class="day muted">2</div><div class="day muted">3</div><div class="day muted">4</div><div class="day muted">5</div><div class="day">6</div><div class="day">7</div>
+            <div class="day">8</div><div class="day">9</div><div class="day active">10</div><div class="day">11</div><div class="day">12</div><div class="day">13</div><div class="day">14</div>
+            <div class="day">15</div><div class="day">16</div><div class="day">17</div><div class="day">18</div><div class="day">19</div><div class="day">20</div><div class="day">21</div>
+            <div class="day">22</div><div class="day">23</div><div class="day">24</div><div class="day">25</div><div class="day">26</div><div class="day">27</div><div class="day">28</div>
+            <div class="day">29</div><div class="day">30</div><div class="day muted"></div><div class="day muted"></div><div class="day muted"></div><div class="day muted"></div><div class="day muted"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section--wide">
+      <div class="section reveal">
+        <div class="section__label">место встречи</div>
+        <h2>Там, где красиво</h2>
+        <p class="section__lead">Отдел ЗАГС администрации Кировского района <br>Ул. 64 армии 123 г. Волгограда</p>
+
+        <div class="photo">
+          <div class="photo__words">
+            <strong>Our<br>day</strong>
+            <span>10 · 10 · 2026</span>
+          </div>
+        </div>
+
+        <div class="cards" id="place">
+          <article class="card">
+            <div class="card__icon">⌖</div>
+            <h3>Локация</h3>
+            <p>Торжественный банкет кафе<br>«Элегант»</p>
+            <a href="https://yandex.ru/maps/-/CTSpYKMO" target="_blank" rel="noopener">открыть карту</a>
+          </article>
+          <article class="card">
+            <div class="card__icon">⌁</div>
+            <h3>Время</h3>
+            <p>Сбор гостей — 13:00<br>Начало церемонии — 13:30</p>
+          </article>
+          <article class="card">
+            <div class="card__icon">♡</div>
+            <h3>Настроение</h3>
+            <p>Лёгкая элегантность,<br>цветы и много любви.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="plan">
+      <div class="section reveal">
+        <div class="section__label">как пройдёт наш день</div>
+        <h2>План дня</h2>
+        <p class="section__lead">Без спешки. С улыбками. И с самыми близкими рядом.</p>
+
+        <div class="timeline">
+          <div class="event">
+            <div class="event__time">13:00</div>
+            <div class="event__dot"></div>
+            <div class="event__text"><h3>Сбор гостей</h3><p>Встречаемся, знакомимся и настраиваемся на праздник.</p></div>
+          </div>
+          <div class="event">
+            <div class="event__time">13:30</div>
+            <div class="event__dot"></div>
+            <div class="event__text"><h3>Церемония</h3><p>Самые важные слова и наше «да» друг другу.</p></div>
+          </div>
+          <div class="event">
+            <div class="event__time">14:00-14:30</div>
+            <div class="event__dot"></div>
+            <div class="event__text"><h3>Фотографии</h3><p>Поймаем самые красивые моменты этого дня.</p></div>
+          </div>
+          <div class="event">
+            <div class="event__time">16:00</div>
+            <div class="event__dot"></div>
+            <div class="event__text"><h3>Ужин & танцы</h3><p>Праздничный ужин, тёплые тосты и музыка.</p></div>
+          </div>
+          <div class="event">
+            <div class="event__time">23:00</div>
+            <div class="event__dot"></div>
+            <div class="event__text"><h3>До новых встреч</h3><p>Обнимемся крепко и сохраним этот день в сердце.</p></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="dress">
+      <div class="section reveal">
+        <div class="section__label">небольшая просьба</div>
+        <h2>Dress code</h2>
+        <p class="section__lead">
+          Нам будет приятно видеть вас в спокойных, натуральных и пастельных оттенках.
+          Главное — приходите красивыми и счастливыми.
+        </p>
+        <div class="palette">
+          <span class="swatch s-olive"></span>
+          <span class="swatch s-ice"></span>
+          <span class="swatch s-yellow"></span>
+          <span class="swatch s-white"></span>
+          <span class="swatch s-pink"></span>
+        </div>
+        <div class="palette-label">
+          <span>olive green</span>
+          <span>ice blue</span>
+          <span>light yellow</span>
+          <span>white</span>
+          <span>нежно розовый</span>
+        </div>
+        <p style="text-align:center;font-size:10px;color:var(--muted);margin-top:5px;">
+          <br>
+          ✦ Вдохновение — оттенки природы и нежности ✦
+        </p>
+      </div>
+    </section>
+
+    <section class="rsvp" id="rsvp">
+  <div class="section reveal">
+    <div class="section__label">пожалуйста, ответьте</div>
+    <h2>Будете с нами?</h2>
+    <p class="section__lead">Заполните небольшую форму — так мы сможем всё подготовить именно для вас.</p>
+
+    <form id="rsvpForm" style="max-width:560px; margin:40px auto 0; display:grid; gap:12px;">
+      <input required name="name" placeholder="Ваше имя" autocomplete="name"
+             style="width:100%; border:1px solid var(--line); background:var(--paper); padding:16px 17px; outline:none; color:var(--ink); font:300 12px var(--sans); transition:.3s;">
+      
+      <select required name="answer"
+              style="width:100%; border:1px solid var(--line); background:var(--paper); padding:16px 17px; outline:none; color:var(--ink); font:300 12px var(--sans); transition:.3s;">
+        <option value="" disabled selected>Выберите ответ</option>
+        <option>С радостью буду!</option>
+        <option>Буду +1</option>
+        <option>К сожалению, не смогу</option>
+      </select>
+      
+      <input name="guest" placeholder="Имя сопровождающего (если будет)"
+             style="width:100%; border:1px solid var(--line); background:var(--paper); padding:16px 17px; outline:none; color:var(--ink); font:300 12px var(--sans); transition:.3s;">
+      
+      <textarea name="comment" placeholder="Пожелания или важная информация"
+                style="width:100%; border:1px solid var(--line); background:var(--paper); padding:16px 17px; outline:none; color:var(--ink); font:300 12px var(--sans); transition:.3s; min-height:110px;"></textarea>
+      
+      <button class="btn" type="submit" id="submitBtn">Отправить ответ</button>
+      <div id="formMessage" style="min-height:20px; color:var(--olive); font-size:11px; text-align:center;"></div>
+    </form>
+  </div>
+</section>
+  </main>
+
+  <footer>
+    <div class="names">Дарья & Александр</div>
+    <p>с любовью · 10 октября 2026</p>
+  </footer>
+
+  <button class="heart" id="heart" aria-label="Включить музыку">♪</button>
+
+ <script>
+  // ====== ЛЁГКИЕ НАСТРОЙКИ ======
+  const loader = document.getElementById('loader');
+  window.addEventListener('load', () => setTimeout(() => loader.classList.add('hide'), 650));
+
+  // Нежные лепестки
+  const petals = document.getElementById('petals');
+  for(let i=0;i<16;i++){
+    const p=document.createElement('span');
+    p.className='petal';
+    p.style.left=(Math.random()*100)+'%';
+    p.style.animationDuration=(9+Math.random()*10)+'s';
+    p.style.animationDelay=(-Math.random()*15)+'s';
+    p.style.opacity=(.25+Math.random()*.45);
+    p.style.transform=`scale(${.55+Math.random()*.8}) rotate(${Math.random()*80}deg)`;
+    petals.appendChild(p);
+  }
+
+  // Появление блоков при прокрутке
+  const observer = new IntersectionObserver((entries)=>{
+    entries.forEach(entry=>{
+      if(entry.isIntersecting) entry.target.classList.add('visible');
+    });
+  }, {threshold:.12});
+  document.querySelectorAll('.reveal').forEach(el=>observer.observe(el));
+
+  // ====== ОТПРАВКА В TELEGRAM ======
+  document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('rsvpForm');
+    const messageDiv = document.getElementById('formMessage');
+    const submitBtn = document.getElementById('submitBtn');
+
+    // ↓↓↓ ВСТАВЬТЕ СЮДА СВОИ ДАННЫЕ ↓↓↓
+    const BOT_TOKEN = '8246673723:AAHCQcZRiQ08P1lJ4dr_5M1VAXjD274vuJ4';  // замените на токен из ШАГА 1
+    const CHAT_ID = '8596485821в';               // замените на число из ШАГА 2
+    // ↑↑↑ ВСТАВЬТЕ СЮДА СВОИ ДАННЫЕ ↑↑↑
+
+    if (form) {
+      form.addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        // Собираем данные
+        const name = document.querySelector('input[name="name"]').value.trim() || 'ИМЯ';
+        const answer = document.querySelector('select[name="answer"]').value; || 'ОТВЕТ'
+        const guest = document.querySelector('input[name="guest"]').value.trim() || 'СОПРОВОЖДАЮЩИЙ';
+        const comment = document.querySelector('textarea[name="comment"]').value.trim() || 'ПОЖЕЛАНИЯ';
+
+        if (!answer) {
+          messageDiv.textContent = '❌ Пожалуйста, выберите вариант ответа.';
+          messageDiv.style.color = '#b57a6b';
+          return;
+        }
+
+        // Блокируем кнопку
+        submitBtn.textContent = 'ОТПРАВКА...';
+        submitBtn.disabled = true;
+        messageDiv.textContent = '⏳ Отправка...';
+        messageDiv.style.color = 'var(--muted)';
+
+        // Формируем сообщение
+        let text = '📨 Новый ответ на приглашение\n\n';
+        text += `👤 Имя: ${name}\n`;
+        text += `✅ Ответ: ${answer}\n`;
+        if (guest) text += `👥 Сопровождающий: ${guest}\n`;
+        if (comment) text += `\n💬 Пожелания: ${comment}\n`;
+        text += `\n📅 ${new Date().toLocaleString('ru-RU')}`;
+
+        // === ОТПРАВКА В TELEGRAM ===
+        const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage?chat_id=${CHAT_ID}&text=${encodeURIComponent(text)}`;
+        
+        // Создаём невидимую картинку для отправки
+        const img = document.createElement('img');
+        img.style.display = 'none';
+        img.src = url;
+        document.body.appendChild(img);
+        
+        // Показываем успех
+        messageDiv.textContent = `✅ Спасибо, ${name}! Ваш ответ отправлен организаторам. ♡`;
+        messageDiv.style.color = 'var(--olive)';
+        form.reset();
+        submitBtn.textContent = 'Отправить ответ';
+        submitBtn.disabled = false;
+        
+        // Удаляем картинку
+        setTimeout(() => img.remove(), 1000);
+      });
+    }
+  });
+
+  // Кнопка музыки
+  let audio = null;
+  document.getElementById('heart').addEventListener('click', ()=>{
+    if(!audio){
+      audio = new Audio();
+      audio.loop = true;
+      // audio.src = "music.mp3";
+    }
+    if(audio.src){
+      audio.paused ? audio.play() : audio.pause();
+    }else{
+      alert('Добавьте файл music.mp3 и укажите audio.src в коде.');
+    }
+  });
+</script>
+</body>
+</html>
