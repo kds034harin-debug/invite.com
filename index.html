@@ -738,6 +738,93 @@ if (heartBtn) {
     }
   });
 }
+    function doPost(e) {
+  try {
+    var data = JSON.parse(e.postData.contents);
+    
+    var BOT_TOKEN = '8246673723:AAHCOcZRiQ08P11J4dr_5M1VAXjD274vu8';
+    var CHAT_ID = '8596485821';
+    
+    var message = '📨 Новый ответ на приглашение\n\n';
+    message = message + '👤 Имя: ' + data.name + '\n';
+    message = message + '✅ Ответ: ' + data.answer + '\n';
+    if (data.guest) {
+      message = message + '👥 Сопровождающий: ' + data.guest + '\n';
+    }
+    if (data.comment) {
+      message = message + '\n💬 Пожелания: ' + data.comment + '\n';
+    }
+    message = message + '\n📅 ' + new Date().toLocaleString('ru-RU');
+    
+    var url = 'https://api.telegram.org/bot' + BOT_TOKEN + '/sendMessage';
+    var payload = {
+      chat_id: CHAT_ID,
+      text: message,
+      parse_mode: 'HTML'
+    };
+    
+    var options = {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      payload: JSON.stringify(payload)
+    };
+    
+    UrlFetchApp.fetch(url, options);
+    
+    return ContentService
+      .createTextOutput(JSON.stringify({ success: true }))
+      .setMimeType(ContentService.MimeType.JSON);
+      
+  } catch (error) {
+    return ContentService
+      .createTextOutput(JSON.stringify({ success: false, error: error.toString() }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+// Поддержка GET-запросов (для тестирования)
+function doGet(e) {
+  try {
+    var params = e.parameter;
+    var BOT_TOKEN = '8246673723:AAHCQcZRiQ08P1lJ4dr_5M1VAXjD274vuJ4';
+    var CHAT_ID = '8596485821';
+    
+    var message = '📨 Новый ответ на приглашение\n\n';
+    message = message + '👤 Имя: ' + (params.name || 'Не указано') + '\n';
+    message = message + '✅ Ответ: ' + (params.answer || 'Не выбран') + '\n';
+    if (params.guest) {
+      message = message + '👥 Сопровождающий: ' + params.guest + '\n';
+    }
+    if (params.comment) {
+      message = message + '\n💬 Пожелания: ' + params.comment + '\n';
+    }
+    message = message + '\n📅 ' + new Date().toLocaleString('ru-RU');
+    
+    var url = 'https://api.telegram.org/bot' + BOT_TOKEN + '/sendMessage';
+    var payload = {
+      chat_id: CHAT_ID,
+      text: message,
+      parse_mode: 'HTML'
+    };
+    
+    var options = {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      payload: JSON.stringify(payload)
+    };
+    
+    UrlFetchApp.fetch(url, options);
+    
+    return ContentService
+      .createTextOutput('OK')
+      .setMimeType(ContentService.MimeType.TEXT);
+      
+  } catch (error) {
+    return ContentService
+      .createTextOutput('Error: ' + error.toString())
+      .setMimeType(ContentService.MimeType.TEXT);
+  }
+}
   </script>
 </body>
 </html>
