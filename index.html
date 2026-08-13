@@ -711,6 +711,76 @@
         }
       });
     }
+    // ====== ОТПРАВКА В TELEGRAM ======
+document.addEventListener('DOMContentLoaded', function() {
+  var form = document.getElementById('rsvpForm');
+  var messageDiv = document.getElementById('formMessage');
+  var submitBtn = document.getElementById('submitBtn');
+
+  // 👇 ВАШИ ДАННЫЕ (проверьте!)
+  var BOT_TOKEN = '8843311292:AAFw0UhCi0UuS3iZrSC-tbv6UD9pIiilnRr0';
+  var CHAT_ID = '8596485821';
+
+  if (form) {
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      // Собираем данные из формы
+      var name = document.querySelector('input[name="name"]').value.trim() || 'Не указано';
+      var answer = document.querySelector('select[name="answer"]').value;
+      var guest = document.querySelector('input[name="guest"]').value.trim() || '';
+      var comment = document.querySelector('textarea[name="comment"]').value.trim() || '';
+
+      // Проверяем, выбран ли ответ
+      if (!answer) {
+        messageDiv.textContent = '❌ Пожалуйста, выберите вариант ответа.';
+        messageDiv.style.color = '#b57a6b';
+        return;
+      }
+
+      // Блокируем кнопку
+      submitBtn.textContent = 'ОТПРАВКА...';
+      submitBtn.disabled = true;
+      messageDiv.textContent = '⏳ Отправка...';
+      messageDiv.style.color = 'var(--muted)';
+
+      // Формируем сообщение для Telegram
+      var text = '📨 Новый ответ на приглашение\n\n';
+      text = text + '👤 Имя: ' + name + '\n';
+      text = text + '✅ Ответ: ' + answer + '\n';
+      if (guest) {
+        text = text + '👥 Сопровождающий: ' + guest + '\n';
+      }
+      if (comment) {
+        text = text + '\n💬 Пожелания: ' + comment + '\n';
+      }
+      text = text + '\n📅 ' + new Date().toLocaleString('ru-RU');
+
+      // Отправляем в Telegram через GET-запрос
+      var url = 'https://api.telegram.org/bot' + BOT_TOKEN + '/sendMessage?chat_id=' + CHAT_ID + '&text=' + encodeURIComponent(text);
+      
+      // Создаём невидимую картинку для отправки (обходит CORS)
+      var img = document.createElement('img');
+      img.style.display = 'none';
+      img.src = url;
+      document.body.appendChild(img);
+      
+      // Показываем успех
+      messageDiv.textContent = '✅ Спасибо, ' + name + '! Ваш ответ отправлен организаторам. ♡';
+      messageDiv.style.color = 'var(--olive)';
+      form.reset();
+      submitBtn.textContent = 'Отправить ответ';
+      submitBtn.disabled = false;
+      
+      // Удаляем картинку через секунду
+      setTimeout(function() {
+        if (img.parentNode) {
+          img.parentNode.removeChild(img);
+        }
+      }, 1000);
+    });
+  }
+});
   </script>
 </body>
 </html>
