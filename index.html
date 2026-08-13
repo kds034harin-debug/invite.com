@@ -592,152 +592,79 @@
 
   <button class="heart" id="heart" aria-label="Включить музыку">♪</button>
 
-  <script>
-    // ====== УПРАВЛЕНИЕ ЗАГРУЗЧИКОМ ======
-    var loader = document.getElementById('loader');
-    if (loader) {
-      window.addEventListener('load', function() {
-        setTimeout(function() {
-          loader.classList.add('hide');
-        }, 650);
-      });
+  <script>// ====== УПРАВЛЕНИЕ ЗАГРУЗЧИКОМ ======
+var loader = document.getElementById('loader');
+if (loader) {
+  window.addEventListener('load', function() {
+    setTimeout(function() {
+      loader.classList.add('hide');
+    }, 650);
+  });
+}
+
+// ====== НЕЖНЫЕ ЛЕПЕСТКИ ======
+var petalsContainer = document.getElementById('petals');
+if (petalsContainer) {
+  for (var i = 0; i < 16; i++) {
+    var p = document.createElement('span');
+    p.className = 'petal';
+    p.style.left = (Math.random() * 100) + '%';
+    p.style.animationDuration = (9 + Math.random() * 10) + 's';
+    p.style.animationDelay = (-Math.random() * 15) + 's';
+    p.style.opacity = (0.25 + Math.random() * 0.45);
+    p.style.transform = 'scale(' + (0.55 + Math.random() * 0.8) + ') rotate(' + (Math.random() * 80) + 'deg)';
+    petalsContainer.appendChild(p);
+  }
+}
+
+// ====== ПОЯВЛЕНИЕ БЛОКОВ ПРИ ПРОКРУТКЕ ======
+var observer = new IntersectionObserver(function(entries) {
+  entries.forEach(function(entry) {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
     }
+  });
+}, { threshold: 0.12 });
 
-    // ====== НЕЖНЫЕ ЛЕПЕСТКИ ======
-    var petalsContainer = document.getElementById('petals');
-    if (petalsContainer) {
-      for (var i = 0; i < 16; i++) {
-        var p = document.createElement('span');
-        p.className = 'petal';
-        p.style.left = (Math.random() * 100) + '%';
-        p.style.animationDuration = (9 + Math.random() * 10) + 's';
-        p.style.animationDelay = (-Math.random() * 15) + 's';
-        p.style.opacity = (0.25 + Math.random() * 0.45);
-        p.style.transform = 'scale(' + (0.55 + Math.random() * 0.8) + ') rotate(' + (Math.random() * 80) + 'deg)';
-        petalsContainer.appendChild(p);
-      }
-    }
+var revealElements = document.querySelectorAll('.reveal');
+for (var i = 0; i < revealElements.length; i++) {
+  observer.observe(revealElements[i]);
+}
 
-    // ====== ПОЯВЛЕНИЕ БЛОКОВ ПРИ ПРОКРУТКЕ ======
-    var observer = new IntersectionObserver(function(entries) {
-      entries.forEach(function(entry) {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('visible');
-        }
-      });
-    }, { threshold: 0.12 });
-
-    var revealElements = document.querySelectorAll('.reveal');
-    for (var i = 0; i < revealElements.length; i++) {
-      observer.observe(revealElements[i]);
-    }
-
-    // ====== ОТПРАВКА В TELEGRAM ======
-    document.addEventListener('DOMContentLoaded', function() {
-      var form = document.getElementById('rsvpForm');
-      var messageDiv = document.getElementById('formMessage');
-      var submitBtn = document.getElementById('submitBtn');
-
-      var BOT_TOKEN = '8246673723:AAHCQcZRiQ08P1lJ4dr_5M1VAXjD274vuJ4';
-      var CHAT_ID = '8596485821';
-
-      if (form) {
-        form.addEventListener('submit', function(e) {
-          e.preventDefault();
-
-          var name = document.querySelector('input[name="name"]').value.trim() || 'Не указано';
-          var answer = document.querySelector('select[name="answer"]').value;
-          var guest = document.querySelector('input[name="guest"]').value.trim() || '';
-          var comment = document.querySelector('textarea[name="comment"]').value.trim() || '';
-
-          if (!answer) {
-            messageDiv.textContent = '❌ Пожалуйста, выберите вариант ответа.';
-            messageDiv.style.color = '#b57a6b';
-            return;
-          }
-
-          submitBtn.textContent = 'ОТПРАВКА...';
-          submitBtn.disabled = true;
-          messageDiv.textContent = '⏳ Отправка...';
-          messageDiv.style.color = 'var(--muted)';
-
-          var text = '📨 Новый ответ на приглашение\n\n';
-          text = text + '👤 Имя: ' + name + '\n';
-          text = text + '✅ Ответ: ' + answer + '\n';
-          if (guest) {
-            text = text + '👥 Сопровождающий: ' + guest + '\n';
-          }
-          if (comment) {
-            text = text + '\n💬 Пожелания: ' + comment + '\n';
-          }
-          text = text + '\n📅 ' + new Date().toLocaleString('ru-RU');
-
-          var url = 'https://api.telegram.org/bot' + BOT_TOKEN + '/sendMessage?chat_id=' + CHAT_ID + '&text=' + encodeURIComponent(text);
-          
-          // Отправка через изображение (обходит CORS)
-          var img = document.createElement('img');
-          img.style.display = 'none';
-          img.src = url;
-          document.body.appendChild(img);
-          
-          messageDiv.textContent = '✅ Спасибо, ' + name + '! Ваш ответ отправлен организаторам. ♡';
-          messageDiv.style.color = 'var(--olive)';
-          form.reset();
-          submitBtn.textContent = 'Отправить ответ';
-          submitBtn.disabled = false;
-          
-          setTimeout(function() {
-            if (img.parentNode) {
-              img.parentNode.removeChild(img);
-            }
-          }, 1000);
-        });
-      }
-    });
-
-    // ====== КНОПКА МУЗЫКИ ======
-    var audio = null;
-    var heartBtn = document.getElementById('heart');
-    if (heartBtn) {
-      heartBtn.addEventListener('click', function() {
-        if (!audio) {
-          audio = new Audio();
-          audio.loop = true;
-          // audio.src = "music.mp3";
-        }
-        if (audio.src) {
-          if (audio.paused) {
-            audio.play();
-          } else {
-            audio.pause();
-          }
-        } else {
-          alert('Добавьте файл music.mp3 и укажите audio.src в коде.');
-        }
-      });
-    }
-    // ====== ОТПРАВКА В TELEGRAM ======
+// ====== ОТПРАВКА В TELEGRAM ======
 document.addEventListener('DOMContentLoaded', function() {
   var form = document.getElementById('rsvpForm');
   var messageDiv = document.getElementById('formMessage');
   var submitBtn = document.getElementById('submitBtn');
 
-  // 👇 ВАШИ ДАННЫЕ (проверьте!)
-  var BOT_TOKEN = '8843311292:AAFw0UhCi0UuS3iZrSC-tbv6UD9pIiilnRr0';
+  // 👇 ВАШИ ДАННЫЕ
+  var BOT_TOKEN = '8246673723:AAHCQcZRiQ08P1lJ4dr_5M1VAXjD274vuJ4';
   var CHAT_ID = '8596485821';
 
   if (form) {
     form.addEventListener('submit', function(e) {
       e.preventDefault();
 
-      // Собираем данные из формы
-      var name = document.querySelector('input[name="name"]').value.trim() || 'Не указано';
-      var answer = document.querySelector('select[name="answer"]').value;
-      var guest = document.querySelector('input[name="guest"]').value.trim() || '';
-      var comment = document.querySelector('textarea[name="comment"]').value.trim() || '';
+      // Получаем данные из формы
+      var nameInput = document.querySelector('input[name="name"]');
+      var answerSelect = document.querySelector('select[name="answer"]');
+      var guestInput = document.querySelector('input[name="guest"]');
+      var commentTextarea = document.querySelector('textarea[name="comment"]');
 
-      // Проверяем, выбран ли ответ
-      if (!answer) {
+      var name = nameInput ? nameInput.value.trim() : '';
+      var answer = answerSelect ? answerSelect.value : '';
+      var guest = guestInput ? guestInput.value.trim() : '';
+      var comment = commentTextarea ? commentTextarea.value.trim() : '';
+
+      // Проверка имени
+      if (name === '') {
+        messageDiv.textContent = '❌ Пожалуйста, введите ваше имя.';
+        messageDiv.style.color = '#b57a6b';
+        return;
+      }
+
+      // Проверка ответа
+      if (answer === '' || answer === null) {
         messageDiv.textContent = '❌ Пожалуйста, выберите вариант ответа.';
         messageDiv.style.color = '#b57a6b';
         return;
@@ -753,18 +680,19 @@ document.addEventListener('DOMContentLoaded', function() {
       var text = '📨 Новый ответ на приглашение\n\n';
       text = text + '👤 Имя: ' + name + '\n';
       text = text + '✅ Ответ: ' + answer + '\n';
-      if (guest) {
+      if (guest !== '') {
         text = text + '👥 Сопровождающий: ' + guest + '\n';
       }
-      if (comment) {
+      if (comment !== '') {
         text = text + '\n💬 Пожелания: ' + comment + '\n';
       }
       text = text + '\n📅 ' + new Date().toLocaleString('ru-RU');
 
-      // Отправляем в Telegram через GET-запрос
+      console.log('📤 Отправляем в Telegram:', text);
+
+      // Отправляем через изображение (обходит CORS)
       var url = 'https://api.telegram.org/bot' + BOT_TOKEN + '/sendMessage?chat_id=' + CHAT_ID + '&text=' + encodeURIComponent(text);
       
-      // Создаём невидимую картинку для отправки (обходит CORS)
       var img = document.createElement('img');
       img.style.display = 'none';
       img.src = url;
@@ -784,8 +712,32 @@ document.addEventListener('DOMContentLoaded', function() {
         }
       }, 1000);
     });
+  } else {
+    console.error('❌ Форма с id="rsvpForm" не найдена!');
   }
 });
+
+// ====== КНОПКА МУЗЫКИ ======
+var audio = null;
+var heartBtn = document.getElementById('heart');
+if (heartBtn) {
+  heartBtn.addEventListener('click', function() {
+    if (!audio) {
+      audio = new Audio();
+      audio.loop = true;
+      // audio.src = "music.mp3";
+    }
+    if (audio.src && audio.src !== '') {
+      if (audio.paused) {
+        audio.play();
+      } else {
+        audio.pause();
+      }
+    } else {
+      alert('Добавьте файл music.mp3 и укажите audio.src в коде.');
+    }
+  });
+}
   </script>
 </body>
 </html>
