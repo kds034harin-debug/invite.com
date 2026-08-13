@@ -555,27 +555,32 @@
         <h2>Будете с нами?</h2>
         <p class="section__lead">Заполните небольшую форму — так мы сможем всё подготовить именно для вас.</p>
 
-        <form id="rsvpForm" style="max-width:560px; margin:40px auto 0; display:grid; gap:12px;">
-          <input required name="name" placeholder="Ваше имя" autocomplete="name"
-                 style="width:100%; border:1px solid var(--line); background:var(--paper); padding:16px 17px; outline:none; color:var(--ink); font:300 12px var(--sans); transition:.3s;">
-          
-          <select required name="answer"
-                  style="width:100%; border:1px solid var(--line); background:var(--paper); padding:16px 17px; outline:none; color:var(--ink); font:300 12px var(--sans); transition:.3s;">
-            <option value="" disabled selected>Выберите ответ</option>
-            <option>С радостью буду!</option>
-            <option>Буду +1</option>
-            <option>К сожалению, не смогу</option>
-          </select>
-          
-          <input name="guest" placeholder="Имя сопровождающего (если будет)"
-                 style="width:100%; border:1px solid var(--line); background:var(--paper); padding:16px 17px; outline:none; color:var(--ink); font:300 12px var(--sans); transition:.3s;">
-          
-          <textarea name="comment" placeholder="Пожелания или важная информация"
-                    style="width:100%; border:1px solid var(--line); background:var(--paper); padding:16px 17px; outline:none; color:var(--ink); font:300 12px var(--sans); transition:.3s; min-height:110px;"></textarea>
-          
-          <button class="btn" type="submit" id="submitBtn">Отправить ответ</button>
-          <div id="formMessage" style="min-height:20px; color:var(--olive); font-size:11px; text-align:center;"></div>
-        </form>
+        <!-- Форма -->
+<form id="rsvpForm" style="max-width:560px; margin:40px auto 0; display:grid; gap:12px;">
+  <!-- ✅ Обязательное поле -->
+  <input required name="name" placeholder="Ваше имя" autocomplete="name"
+         style="width:100%; border:1px solid var(--line); background:var(--paper); padding:16px 17px; outline:none; color:var(--ink); font:300 12px var(--sans); transition:.3s;">
+  
+  <!-- ✅ Обязательное поле -->
+  <select required name="answer"
+          style="width:100%; border:1px solid var(--line); background:var(--paper); padding:16px 17px; outline:none; color:var(--ink); font:300 12px var(--sans); transition:.3s;">
+    <option value="" disabled selected>Выберите ответ</option>
+    <option>С радостью буду!</option>
+    <option>Буду +1</option>
+    <option>К сожалению, не смогу</option>
+  </select>
+  
+  <!-- ❌ Необязательное поле -->
+  <input name="guest" placeholder="Имя сопровождающего (если будет)"
+         style="width:100%; border:1px solid var(--line); background:var(--paper); padding:16px 17px; outline:none; color:var(--ink); font:300 12px var(--sans); transition:.3s;">
+  
+  <!-- ❌ Необязательное поле -->
+  <textarea name="comment" placeholder="Пожелания или важная информация"
+            style="width:100%; border:1px solid var(--line); background:var(--paper); padding:16px 17px; outline:none; color:var(--ink); font:300 12px var(--sans); transition:.3s; min-height:110px;"></textarea>
+  
+  <button class="btn" type="submit" id="submitBtn">Отправить ответ</button>
+  <div id="formMessage" style="min-height:20px; color:var(--olive); font-size:11px; text-align:center;"></div>
+</form>
       </div>
     </section>
   </main>
