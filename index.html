@@ -593,6 +593,7 @@
   <button class="heart" id="heart" aria-label="Включить музыку">♪</button>
 
   <script>// ====== УПРАВЛЕНИЕ ЗАГРУЗЧИКОМ ======
+// ====== УПРАВЛЕНИЕ ЗАГРУЗЧИКОМ ======
 var loader = document.getElementById('loader');
 if (loader) {
   window.addEventListener('load', function() {
@@ -631,89 +632,73 @@ for (var i = 0; i < revealElements.length; i++) {
   observer.observe(revealElements[i]);
 }
 
-// ====== ОТПРАВКА В TELEGRAM ======
+// ====== ОТПРАВКА ЧЕРЕЗ GOOGLE APPS SCRIPT ======
 document.addEventListener('DOMContentLoaded', function() {
   var form = document.getElementById('rsvpForm');
   var messageDiv = document.getElementById('formMessage');
   var submitBtn = document.getElementById('submitBtn');
 
-  // 👇 ВАШИ ДАННЫЕ
-  var BOT_TOKEN = '8246673723:AAHCQcZRiQ08P1lJ4dr_5M1VAXjD274vuJ4';
-  var CHAT_ID = '8596485821';
+  // 👇 ВАШ URL ОТ GOOGLE APPS SCRIPT (СКОПИРУЙТЕ ИЗ РАЗВЁРТЫВАНИЯ)
+  var GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzVWV6WaZnzNCX4WqjkpM9H8Mvbr61GJ4F4b8qPNElemM401sFLrB53d0hFgSdWoMlqXA/exec';
 
   if (form) {
     form.addEventListener('submit', function(e) {
       e.preventDefault();
 
-      // Получаем данные из формы
-      var nameInput = document.querySelector('input[name="name"]');
-      var answerSelect = document.querySelector('select[name="answer"]');
-      var guestInput = document.querySelector('input[name="guest"]');
-      var commentTextarea = document.querySelector('textarea[name="comment"]');
+      var name = document.querySelector('input[name="name"]').value.trim();
+      var answer = document.querySelector('select[name="answer"]').value;
+      var guest = document.querySelector('input[name="guest"]').value.trim() || '';
+      var comment = document.querySelector('textarea[name="comment"]').value.trim() || '';
 
-      var name = nameInput ? nameInput.value.trim() : '';
-      var answer = answerSelect ? answerSelect.value : '';
-      var guest = guestInput ? guestInput.value.trim() : '';
-      var comment = commentTextarea ? commentTextarea.value.trim() : '';
-
-      // Проверка имени
       if (name === '') {
         messageDiv.textContent = '❌ Пожалуйста, введите ваше имя.';
         messageDiv.style.color = '#b57a6b';
         return;
       }
 
-      // Проверка ответа
       if (answer === '' || answer === null) {
         messageDiv.textContent = '❌ Пожалуйста, выберите вариант ответа.';
         messageDiv.style.color = '#b57a6b';
         return;
       }
 
-      // Блокируем кнопку
       submitBtn.textContent = 'ОТПРАВКА...';
       submitBtn.disabled = true;
       messageDiv.textContent = '⏳ Отправка...';
       messageDiv.style.color = 'var(--muted)';
 
-      // Формируем сообщение для Telegram
-      var text = '📨 Новый ответ на приглашение\n\n';
-      text = text + '👤 Имя: ' + name + '\n';
-      text = text + '✅ Ответ: ' + answer + '\n';
-      if (guest !== '') {
-        text = text + '👥 Сопровождающий: ' + guest + '\n';
-      }
-      if (comment !== '') {
-        text = text + '\n💬 Пожелания: ' + comment + '\n';
-      }
-      text = text + '\n📅 ' + new Date().toLocaleString('ru-RU');
+      console.log('📤 Отправляем через Google Apps Script:', { name, answer, guest, comment });
 
-      console.log('📤 Отправляем в Telegram:', text);
-
-      // Отправляем через изображение (обходит CORS)
-      var url = 'https://api.telegram.org/bot' + BOT_TOKEN + '/sendMessage?chat_id=' + CHAT_ID + '&text=' + encodeURIComponent(text);
-      
-      var img = document.createElement('img');
-      img.style.display = 'none';
-      img.src = url;
-      document.body.appendChild(img);
-      
-      // Показываем успех
-      messageDiv.textContent = '✅ Спасибо, ' + name + '! Ваш ответ отправлен организаторам. ♡';
-      messageDiv.style.color = 'var(--olive)';
-      form.reset();
-      submitBtn.textContent = 'Отправить ответ';
-      submitBtn.disabled = false;
-      
-      // Удаляем картинку через секунду
-      setTimeout(function() {
-        if (img.parentNode) {
-          img.parentNode.removeChild(img);
-        }
-      }, 1000);
+      // Отправляем через Google Apps Script
+      fetch(GOOGLE_SCRIPT_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: name,
+          answer: answer,
+          guest: guest,
+          comment: comment
+        })
+      })
+      .then(function() {
+        messageDiv.textContent = '✅ Спасибо, ' + name + '! Ваш ответ отправлен организаторам. ♡';
+        messageDiv.style.color = 'var(--olive)';
+        form.reset();
+        submitBtn.textContent = 'Отправить ответ';
+        submitBtn.disabled = false;
+        console.log('✅ Отправлено успешно!');
+      })
+      .catch(function(error) {
+        console.error('❌ Ошибка:', error);
+        messageDiv.textContent = '❌ Извините, произошла ошибка. Попробуйте позже.';
+        messageDiv.style.color = '#b57a6b';
+        submitBtn.textContent = 'Отправить ответ';
+        submitBtn.disabled = false;
+      });
     });
-  } else {
-    console.error('❌ Форма с id="rsvpForm" не найдена!');
   }
 });
 
@@ -727,7 +712,7 @@ if (heartBtn) {
       audio.loop = true;
       // audio.src = "music.mp3";
     }
-    if (audio.src && audio.src !== '') {
+    if (audio.src) {
       if (audio.paused) {
         audio.play();
       } else {
@@ -737,93 +722,6 @@ if (heartBtn) {
       alert('Добавьте файл music.mp3 и укажите audio.src в коде.');
     }
   });
-}
-    function doPost(e) {
-  try {
-    var data = JSON.parse(e.postData.contents);
-    
-    var BOT_TOKEN = '8246673723:AAHCOcZRiQ08P11J4dr_5M1VAXjD274vu8';
-    var CHAT_ID = '8596485821';
-    
-    var message = '📨 Новый ответ на приглашение\n\n';
-    message = message + '👤 Имя: ' + data.name + '\n';
-    message = message + '✅ Ответ: ' + data.answer + '\n';
-    if (data.guest) {
-      message = message + '👥 Сопровождающий: ' + data.guest + '\n';
-    }
-    if (data.comment) {
-      message = message + '\n💬 Пожелания: ' + data.comment + '\n';
-    }
-    message = message + '\n📅 ' + new Date().toLocaleString('ru-RU');
-    
-    var url = 'https://api.telegram.org/bot' + BOT_TOKEN + '/sendMessage';
-    var payload = {
-      chat_id: CHAT_ID,
-      text: message,
-      parse_mode: 'HTML'
-    };
-    
-    var options = {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      payload: JSON.stringify(payload)
-    };
-    
-    UrlFetchApp.fetch(url, options);
-    
-    return ContentService
-      .createTextOutput(JSON.stringify({ success: true }))
-      .setMimeType(ContentService.MimeType.JSON);
-      
-  } catch (error) {
-    return ContentService
-      .createTextOutput(JSON.stringify({ success: false, error: error.toString() }))
-      .setMimeType(ContentService.MimeType.JSON);
-  }
-}
-
-// Поддержка GET-запросов (для тестирования)
-function doGet(e) {
-  try {
-    var params = e.parameter;
-    var BOT_TOKEN = '8246673723:AAHCQcZRiQ08P1lJ4dr_5M1VAXjD274vuJ4';
-    var CHAT_ID = '8596485821';
-    
-    var message = '📨 Новый ответ на приглашение\n\n';
-    message = message + '👤 Имя: ' + (params.name || 'Не указано') + '\n';
-    message = message + '✅ Ответ: ' + (params.answer || 'Не выбран') + '\n';
-    if (params.guest) {
-      message = message + '👥 Сопровождающий: ' + params.guest + '\n';
-    }
-    if (params.comment) {
-      message = message + '\n💬 Пожелания: ' + params.comment + '\n';
-    }
-    message = message + '\n📅 ' + new Date().toLocaleString('ru-RU');
-    
-    var url = 'https://api.telegram.org/bot' + BOT_TOKEN + '/sendMessage';
-    var payload = {
-      chat_id: CHAT_ID,
-      text: message,
-      parse_mode: 'HTML'
-    };
-    
-    var options = {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      payload: JSON.stringify(payload)
-    };
-    
-    UrlFetchApp.fetch(url, options);
-    
-    return ContentService
-      .createTextOutput('OK')
-      .setMimeType(ContentService.MimeType.TEXT);
-      
-  } catch (error) {
-    return ContentService
-      .createTextOutput('Error: ' + error.toString())
-      .setMimeType(ContentService.MimeType.TEXT);
-  }
 }
   </script>
 </body>
